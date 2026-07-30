@@ -1,5 +1,7 @@
 import express from "express";
-import passport from "passport";
+import passport from "../config/passport.js";
+import generateToken from "../utils/generateToken.js";
+
 const router = express.Router();
 
 router.get(
@@ -12,10 +14,19 @@ router.get(
 router.get(
   "/google/callback",
   passport.authenticate("google", {
+    session: false,
     failureRedirect: "/",
   }),
   (req, res) => {
-    res.send("Login Successful");
+
+    const token = generateToken(req.user._id);
+
+    res.json({
+      message: "Login Successful",
+      token,
+      user: req.user,
+    });
+
   }
 );
 

@@ -26,22 +26,12 @@ passport.use(
           });
         }
 
-        done(null, user);
+        return done(null, user);
       } catch (err) {
-        done(err, null);
+        return done(err, null);
       }
     }
   )
 );
-
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-  const user = await User.findById(id);
-
-  done(null, user);
-});
 
 export default passport;
