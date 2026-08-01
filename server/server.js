@@ -8,6 +8,7 @@ import connectDB from "./config/db.js";
 import testRoutes from "./routes/testRoutes.js";
 import itemRoutes from "./routes/itemRoutes.js";
 import claimRoutes from "./routes/claimRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/test", testRoutes);
 app.use("/api/items", itemRoutes);
 app.use("/api/claims", claimRoutes);
+app.use("/api/reports", reportRoutes);
 
 
 app.get("/", (req, res) => {
