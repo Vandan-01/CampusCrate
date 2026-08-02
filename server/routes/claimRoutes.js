@@ -7,17 +7,6 @@ import {
   deleteClaim,
 } from "../controllers/claimController.js";
 
-import protect from "../middleware/authMiddleware.js";
-
-const router = express.Router();
-
-router.post("/", protect, createClaim);
-
-router.get("/", protect, getClaims);
-
-router.patch("/:id", protect, updateClaim);
-
-router.delete("/:id", protect, deleteClaim);
 const router = express.Router();
 
 router.post("/", createClaim);

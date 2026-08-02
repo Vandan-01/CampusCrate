@@ -2,49 +2,45 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
 const protect = async (req, res, next) => {
-  let token;
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    token = req.headers.authorization.split(" ")[1];
+    let token;
 
-    try {
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_SECRET
-      );
+    if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith("Bearer")
+    ) {
 
-      const user = await User.findById(decoded.id).select("-__v");
+        token = req.headers.authorization.split(" ")[1];
 
-      if (!user) {
-        return res.status(401).json({
-          message: "User not found",
-        });
-      }
+        try {
 
-      if (user.blocked) {
-        return res.status(403).json({
-          message: "Your account has been blocked",
-        });
-      }
+            const decoded = jwt.verify(
+                token,
+                process.env.JWT_SECRET
+            );
 
-      req.user = user;
+            req.user = await User.findById(decoded.id).select("-__v");
 
-      next();
-    } catch (error) {
-      return res.status(401).json({
-        message: "Not Authorized",
-      });
+            next();
+
+        } catch (error) {
+
+            return res.status(401).json({
+                message: "Not Authorized"
+            });
+
+        }
+
     }
-  }
 
-  if (!token) {
-    return res.status(401).json({
-      message: "No Token",
-    });
-  }
+    if (!token) {
+
+        return res.status(401).json({
+            message: "No Token"
+        });
+
+    }
+
 };
 
 export default protect;
