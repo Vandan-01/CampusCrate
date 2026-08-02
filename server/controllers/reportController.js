@@ -11,10 +11,6 @@ export const createReport = async (req, res) => {
       description,
       reportedBy: req.user._id,
     });
-// Create Report
-export const createReport = async (req, res) => {
-  try {
-    const report = await Report.create(req.body);
 
     res.status(201).json({
       success: true,
@@ -29,7 +25,6 @@ export const createReport = async (req, res) => {
   }
 };
 
-// Get All Reports (Admin)
 export const getReports = async (req, res) => {
   try {
     const reports = await Report.find()
@@ -49,7 +44,6 @@ export const getReports = async (req, res) => {
   }
 };
 
-// Update Report Status
 export const updateReport = async (req, res) => {
   try {
     const report = await Report.findByIdAndUpdate(
@@ -81,7 +75,6 @@ export const updateReport = async (req, res) => {
   }
 };
 
-// Block User (Admin)
 export const blockUser = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(
@@ -112,5 +105,4 @@ export const blockUser = async (req, res) => {
       message: error.message,
     });
   }
-};
 };

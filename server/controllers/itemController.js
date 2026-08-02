@@ -26,10 +26,6 @@ export const createItem = async (req, res) => {
       tags,
       postedBy: req.user._id,
     });
-// Create Item
-export const createItem = async (req, res) => {
-  try {
-    const item = await Item.create(req.body);
 
     res.status(201).json({
       success: true,
@@ -71,10 +67,6 @@ export const getItems = async (req, res) => {
     const items = await Item.find(filter)
       .populate("postedBy", "name email avatar")
       .sort({ createdAt: -1 });
-// Get All Items
-export const getItems = async (req, res) => {
-  try {
-    const items = await Item.find().populate("postedBy", "name email");
 
     res.status(200).json({
       success: true,
@@ -89,13 +81,11 @@ export const getItems = async (req, res) => {
   }
 };
 
-// Get Single Item
 export const getItemById = async (req, res) => {
   try {
     const item = await Item.findById(req.params.id).populate(
       "postedBy",
       "name email avatar"
-      "name email"
     );
 
     if (!item) {
@@ -120,13 +110,6 @@ export const getItemById = async (req, res) => {
 export const updateItem = async (req, res) => {
   try {
     const item = await Item.findById(req.params.id);
-// Update Item
-export const updateItem = async (req, res) => {
-  try {
-    const item = await Item.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
 
     if (!item) {
       return res.status(404).json({
@@ -181,10 +164,6 @@ export const updateItem = async (req, res) => {
 export const deleteItem = async (req, res) => {
   try {
     const item = await Item.findById(req.params.id);
-// Delete Item
-export const deleteItem = async (req, res) => {
-  try {
-    const item = await Item.findByIdAndDelete(req.params.id);
 
     if (!item) {
       return res.status(404).json({

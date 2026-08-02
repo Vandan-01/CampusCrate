@@ -12,9 +12,6 @@ import claimRoutes from "./routes/claimRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import testRoutes from "./routes/testRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-import itemRoutes from "./routes/itemRoutes.js";
-import claimRoutes from "./routes/claimRoutes.js";
-import reportRoutes from "./routes/reportRoutes.js";
 
 const app = express();
 
@@ -31,10 +28,6 @@ app.use("/api/claims", claimRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/test", testRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/items", itemRoutes);
-app.use("/api/claims", claimRoutes);
-app.use("/api/reports", reportRoutes);
-
 
 app.get("/", (req, res) => {
   res.json({
