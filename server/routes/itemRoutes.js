@@ -10,15 +10,15 @@ import {
 } from "../controllers/itemController.js";
 
 import protect from "../middleware/authMiddleware.js";
+import upload from "../middleware/uploadMiddleware.js";
 
 const router = express.Router();
-
 
 router.get("/", getItems);
 router.get("/:id", getItemById);
 
+router.post("/", protect, upload.single("photo"), createItem);
 
-router.post("/", protect, createItem);
 router.patch("/:id/returned", protect, markItemReturned);
 router.patch("/:id", protect, updateItem);
 router.delete("/:id", protect, deleteItem);

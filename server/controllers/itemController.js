@@ -1,4 +1,5 @@
 import Item from "../models/Item.js";
+import uploadToCloudinary from "../utils/cloudinaryUpload.js";
 
 export const createItem = async (req, res) => {
   try {
@@ -9,10 +10,36 @@ export const createItem = async (req, res) => {
       category,
       location,
       date,
-      photoUrl,
       claimQuestion,
       tags,
     } = req.body;
+
+    if (
+      !type ||
+      !title ||
+      !description ||
+      !category ||
+      !location ||
+      !date
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "All required fields must be provided",
+      });
+    }
+
+    if (!["lost", "found"].includes(type)) {
+      return res.status(400).json({
+        success: false,
+        message: "Type must be lost or found",
+      });
+    }
+
+    let photoUrl;
+
+    if (req.file) {
+      photoUrl = await uploadToCloudinary(req.file.buffer);
+    }
 
     const item = await Item.create({
       type,
@@ -33,6 +60,8 @@ export const createItem = async (req, res) => {
       data: item,
     });
   } catch (error) {
+    console.error("Create Item Error:", error);
+
     res.status(500).json({
       success: false,
       message: error.message,
