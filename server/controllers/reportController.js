@@ -1,12 +1,14 @@
-<<<<<<< Updated upstream
-=======
 import Report from "../models/Report.js";
 import User from "../models/User.js";
 
 export const createReport = async (req, res) => {
   try {
+    const { itemId, reason, description } = req.body;
+
     const report = await Report.create({
-      ...req.body,
+      itemId,
+      reason,
+      description,
       reportedBy: req.user._id,
     });
 
@@ -104,4 +106,3 @@ export const blockUser = async (req, res) => {
     });
   }
 };
->>>>>>> Stashed changes
