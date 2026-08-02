@@ -1,6 +1,16 @@
 import Report from "../models/Report.js";
 import User from "../models/User.js";
 
+export const createReport = async (req, res) => {
+  try {
+    const { itemId, reason, description } = req.body;
+
+    const report = await Report.create({
+      itemId,
+      reason,
+      description,
+      reportedBy: req.user._id,
+    });
 // Create Report
 export const createReport = async (req, res) => {
   try {
@@ -102,4 +112,5 @@ export const blockUser = async (req, res) => {
       message: error.message,
     });
   }
+};
 };
