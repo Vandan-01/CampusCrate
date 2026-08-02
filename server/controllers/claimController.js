@@ -47,6 +47,11 @@ export const createClaim = async (req, res) => {
       message,
     });
 
+// Create a Claim
+export const createClaim = async (req, res) => {
+  try {
+    const claim = await Claim.create(req.body);
+
     res.status(201).json({
       success: true,
       message: "Claim submitted successfully",
@@ -86,6 +91,12 @@ export const getClaims = async (req, res) => {
       .populate("itemId", "title category status postedBy")
       .populate("claimantId", "name email avatar")
       .sort({ createdAt: -1 });
+// Get All Claims
+export const getClaims = async (req, res) => {
+  try {
+    const claims = await Claim.find()
+      .populate("itemId", "title category status")
+      .populate("claimantId", "name email");
 
     res.status(200).json({
       success: true,
@@ -112,6 +123,17 @@ export const updateClaim = async (req, res) => {
     }
 
     const claim = await Claim.findById(req.params.id).populate("itemId");
+// Update Claim Status
+export const updateClaim = async (req, res) => {
+  try {
+    const claim = await Claim.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!claim) {
       return res.status(404).json({
@@ -164,6 +186,9 @@ export const updateClaim = async (req, res) => {
         status === "approved"
           ? "Claim approved and item marked as claimed"
           : "Claim rejected",
+    res.status(200).json({
+      success: true,
+      message: "Claim updated successfully",
       data: claim,
     });
   } catch (error) {
@@ -177,6 +202,10 @@ export const updateClaim = async (req, res) => {
 export const deleteClaim = async (req, res) => {
   try {
     const claim = await Claim.findById(req.params.id);
+// Delete Claim
+export const deleteClaim = async (req, res) => {
+  try {
+    const claim = await Claim.findByIdAndDelete(req.params.id);
 
     if (!claim) {
       return res.status(404).json({
