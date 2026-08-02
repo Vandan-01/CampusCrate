@@ -45,15 +45,21 @@ const itemSchema = new mongoose.Schema(
       required: true,
     },
 
-   photoUrl: {
-  type: String,
-  trim: true,
-},
+    photoUrl: {
+      type: String,
+      trim: true,
+    },
 
     status: {
       type: String,
       enum: ["active", "claimed", "returned"],
       default: "active",
+    },
+
+    approvalStatus: {
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
     },
 
     postedBy: {

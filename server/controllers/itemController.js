@@ -78,7 +78,9 @@ export const getItems = async (req, res) => {
       search,
     } = req.query;
 
-    const filter = {};
+    const filter = {
+      approvalStatus: "approved",
+    };
 
     if (type) filter.type = type;
     if (category) filter.category = category;
@@ -263,6 +265,66 @@ export const markItemReturned = async (req, res) => {
       success: true,
       message: "Item marked as returned",
       data: item,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+export const moderateItem = async (req, res) => {
+  try {
+    const { approvalStatus } = req.body;
+
+    if (!["approved", "rejected"].includes(approvalStatus)) {
+      return res.status(400).json({
+        success: false,
+        message: "Approval status must be approved or rejected",
+      });
+    }
+
+    const item = await Item.findById(req.params.id);
+
+    if (!item) {
+      return res.status(404).json({
+        success: false,
+        message: "Item not found",
+      });
+    }
+
+    item.approvalStatus = approvalStatus;
+
+    await item.save();
+
+    res.status(200).json({
+      success: true,
+      message: `Item ${approvalStatus}`,
+      data: item,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+export const getPendingItems = async (req, res) => {
+  try {
+    const items = await Item.find({
+      approvalStatus: "pending",
+    })
+      .populate("postedBy", "name email avatar")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: items.length,
+      data: items,
     });
   } catch (error) {
     res.status(500).json({

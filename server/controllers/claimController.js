@@ -3,7 +3,14 @@ import Item from "../models/Item.js";
 
 export const createClaim = async (req, res) => {
   try {
-    const { itemId, message } = req.body;
+    const { itemId, message, answer } = req.body;
+
+    if (!itemId || !message || !answer) {
+      return res.status(400).json({
+        success: false,
+        message: "Item ID, message and answer are required",
+      });
+    }
 
     const item = await Item.findById(itemId);
 
@@ -14,13 +21,7 @@ export const createClaim = async (req, res) => {
       });
     }
 
-    if (item.status !== "active") {
-      return res.status(400).json({
-        success: false,
-        message: "This item is no longer available for claims",
-      });
-    }
-
+    // User cannot claim their own item
     if (item.postedBy.toString() === req.user._id.toString()) {
       return res.status(400).json({
         success: false,
@@ -28,16 +29,16 @@ export const createClaim = async (req, res) => {
       });
     }
 
+    // Prevent duplicate claims
     const existingClaim = await Claim.findOne({
       itemId,
       claimantId: req.user._id,
-      status: "pending",
     });
 
     if (existingClaim) {
       return res.status(400).json({
         success: false,
-        message: "You already have a pending claim for this item",
+        message: "You have already submitted a claim for this item",
       });
     }
 
@@ -45,6 +46,7 @@ export const createClaim = async (req, res) => {
       itemId,
       claimantId: req.user._id,
       message,
+      answer,
     });
 
     res.status(201).json({
@@ -59,7 +61,6 @@ export const createClaim = async (req, res) => {
     });
   }
 };
-
 
 export const getClaims = async (req, res) => {
   try {
@@ -107,11 +108,11 @@ export const updateClaim = async (req, res) => {
     if (!["approved", "rejected"].includes(status)) {
       return res.status(400).json({
         success: false,
-        message: "Status must be approved or rejected",
+        message: "Invalid claim status",
       });
     }
 
-    const claim = await Claim.findById(req.params.id).populate("itemId");
+    const claim = await Claim.findById(req.params.id);
 
     if (!claim) {
       return res.status(404).json({
@@ -120,52 +121,33 @@ export const updateClaim = async (req, res) => {
       });
     }
 
-    const item = claim.itemId;
-
-    if (
-      item.postedBy.toString() !== req.user._id.toString() &&
-      req.user.role !== "admin"
-    ) {
-      return res.status(403).json({
-        success: false,
-        message: "You cannot manage this claim",
-      });
-    }
-
     if (claim.status !== "pending") {
       return res.status(400).json({
         success: false,
-        message: "This claim has already been processed",
+        message: "Claim has already been processed",
       });
     }
 
     claim.status = status;
     await claim.save();
 
+    // If claim approved, mark item as claimed
     if (status === "approved") {
-      item.status = "claimed";
-      await item.save();
-
-      await Claim.updateMany(
-        {
-          itemId: item._id,
-          _id: { $ne: claim._id },
-          status: "pending",
-        },
-        {
-          $set: { status: "rejected" },
-        }
-      );
+      await Item.findByIdAndUpdate(claim.itemId, {
+        status: "claimed",
+      });
     }
+
+    const updatedClaim = await Claim.findById(claim._id)
+      .populate("itemId", "title category status")
+      .populate("claimantId", "name email");
 
     res.status(200).json({
       success: true,
-      message:
-        status === "approved"
-          ? "Claim approved and item marked as claimed"
-          : "Claim rejected",
-      data: claim,
+      message: `Claim ${status}`,
+      data: updatedClaim,
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
