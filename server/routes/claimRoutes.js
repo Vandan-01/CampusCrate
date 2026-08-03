@@ -1,4 +1,5 @@
 import express from "express";
+import checkBlocked from "../middleware/checkBlocked.js";
 
 import {
   createClaim,
@@ -12,8 +13,7 @@ import adminOnly from "../middleware/adminMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", protect, createClaim);
-
+router.post("/", protect, checkBlocked, createClaim);
 router.get("/", protect, getClaims);
 
 router.patch("/:id", protect, adminOnly, updateClaim);

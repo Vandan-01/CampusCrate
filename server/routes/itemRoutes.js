@@ -1,4 +1,5 @@
 import express from "express";
+import checkBlocked from "../middleware/checkBlocked.js";
 
 import {
   createItem,
@@ -17,7 +18,7 @@ const router = express.Router();
 router.get("/", getItems);
 router.get("/:id", getItemById);
 
-router.post("/", protect, upload.single("photo"), createItem);
+router.post("/", protect, checkBlocked, upload.single("photo"), createItem);
 
 router.patch("/:id/returned", protect, markItemReturned);
 router.patch("/:id", protect, updateItem);
