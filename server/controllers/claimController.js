@@ -128,14 +128,31 @@ export const updateClaim = async (req, res) => {
       });
     }
 
+    const item = await Item.findById(claim.itemId);
+
+    if (!item) {
+      return res.status(404).json({
+        success: false,
+        message: "Associated item not found",
+      });
+    }
+
+    if (
+      item.postedBy.toString() !== req.user._id.toString() &&
+      req.user.role !== "admin"
+    ) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not authorized to update this claim",
+      });
+    }
+
     claim.status = status;
     await claim.save();
 
-    // If claim approved, mark item as claimed
     if (status === "approved") {
-      await Item.findByIdAndUpdate(claim.itemId, {
-        status: "claimed",
-      });
+      item.status = "claimed";
+      await item.save();
     }
 
     const updatedClaim = await Claim.findById(claim._id)
