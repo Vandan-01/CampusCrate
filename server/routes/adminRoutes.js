@@ -2,6 +2,7 @@ import express from "express";
 import protect from "../middleware/authMiddleware.js";
 import adminOnly from "../middleware/adminMiddleware.js";
 import User from "../models/User.js";
+import { getDashboardStats } from "../controllers/adminController.js";
 
 import {
   moderateItem,
@@ -12,6 +13,7 @@ const router = express.Router();
 
 // All admin routes require authentication + admin role
 router.use(protect, adminOnly);
+router.get("/dashboard", getDashboardStats);
 
 // Get all users
 router.get("/users", async (req, res) => {
