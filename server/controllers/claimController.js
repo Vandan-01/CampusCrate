@@ -84,7 +84,7 @@ export const getClaims = async (req, res) => {
     }
 
     const claims = await Claim.find(filter)
-      .populate("itemId", "title category status postedBy")
+      .populate("itemId", "title category status postedBy claimQuestion")
       .populate("claimantId", "name email avatar")
       .sort({ createdAt: -1 });
 
