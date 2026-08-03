@@ -165,6 +165,46 @@ export const getItemById = async (req, res) => {
   }
 };
 
+export const getMatchingItems = async (req, res) => {
+  try {
+    const item = await Item.findById(req.params.id);
+
+    if (!item) {
+      return res.status(404).json({
+        success: false,
+        message: "Item not found",
+      });
+    }
+
+    const oppositeType = item.type === "lost" ? "found" : "lost";
+
+    const matches = await Item.find({
+      _id: { $ne: item._id },
+      approvalStatus: "approved",
+      status: "active",
+      type: oppositeType,
+      $or: [
+        { category: item.category },
+        { location: { $regex: item.location, $options: "i" } },
+        { tags: { $in: item.tags } },
+      ],
+    })
+      .populate("postedBy", "name email avatar")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: matches.length,
+      data: matches,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 export const updateItem = async (req, res) => {
   try {
     const item = await Item.findById(req.params.id);

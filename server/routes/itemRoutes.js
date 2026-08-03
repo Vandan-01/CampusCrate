@@ -5,6 +5,7 @@ import {
   createItem,
   getItems,
   getItemById,
+  getMatchingItems,
   updateItem,
   deleteItem,
   markItemReturned,
@@ -16,6 +17,7 @@ import upload from "../middleware/uploadMiddleware.js";
 const router = express.Router();
 
 router.get("/", getItems);
+router.get("/:id/matches", getMatchingItems);
 router.get("/:id", getItemById);
 
 router.post("/", protect, checkBlocked, upload.single("photo"), createItem);
