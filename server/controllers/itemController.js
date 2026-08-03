@@ -71,12 +71,16 @@ export const createItem = async (req, res) => {
 
 export const getItems = async (req, res) => {
   try {
-    const {
-      type,
-      category,
-      status,
-      search,
-    } = req.query;
+   const {
+  type,
+  category,
+  status,
+  search,
+  location,
+  sort = "newest",
+  page = 1,
+  limit = 10,
+} = req.query;
 
     const filter = {
       approvalStatus: "approved",
@@ -85,6 +89,12 @@ export const getItems = async (req, res) => {
     if (type) filter.type = type;
     if (category) filter.category = category;
     if (status) filter.status = status;
+    if (location) {
+  filter.location = {
+    $regex: location,
+    $options: "i",
+  };
+}
 
     if (search) {
       filter.$or = [
@@ -95,15 +105,32 @@ export const getItems = async (req, res) => {
       ];
     }
 
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+    const skip = (pageNumber - 1) * limitNumber; 
+    
+    const sortOption =
+  sort === "oldest"
+    ? { createdAt: 1 }
+    : { createdAt: -1 };
+
+
+const totalItems = await Item.countDocuments(filter);
+
     const items = await Item.find(filter)
-      .populate("postedBy", "name email avatar")
-      .sort({ createdAt: -1 });
+  .populate("postedBy", "name email avatar")
+  .sort(sortOption)
+  .skip(skip)
+  .limit(limitNumber);
 
     res.status(200).json({
-      success: true,
-      count: items.length,
-      data: items,
-    });
+  success: true,
+  count: items.length,
+  totalItems,
+  totalPages: Math.ceil(totalItems / limitNumber),
+  currentPage: pageNumber,
+  data: items,
+});
   } catch (error) {
     res.status(500).json({
       success: false,
