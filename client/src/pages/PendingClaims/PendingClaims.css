@@ -1,0 +1,74 @@
+.table-container {
+  background: white;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+}
+
+thead {
+  background: #2563eb;
+}
+
+th {
+  color: rgb(0, 0, 0);
+  padding: 18px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+td {
+  padding: 18px;
+  text-align: center;
+  color: #1f2937;
+}
+
+tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  background: white;
+}
+
+tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+tbody tr:hover {
+  background: #dbeafe;
+}
+
+.search-input,
+.filter-select {
+  padding: 10px 15px;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  outline: none;
+  font-size: 15px;
+}
+
+.search-input:focus,
+.filter-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.approve-btn {
+  background: #22c55e;
+}
+
+.approve-btn:hover {
+  background: #16a34a;
+}
+
+.reject-btn {
+  background: #ef4444;
+}
+
+.reject-btn:hover {
+  background: #dc2626;
+}
+
+.page-header h2 {
+  color: #1e3a8a;
+  font-size: 32px;
+  font-weight: 700;
+}
