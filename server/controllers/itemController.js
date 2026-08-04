@@ -1,4 +1,5 @@
 import Item from "../models/Item.js";
+import uploadToCloudinary from "../utils/cloudinaryUpload.js";
 
 export const createItem = async (req, res) => {
   try {
@@ -9,10 +10,36 @@ export const createItem = async (req, res) => {
       category,
       location,
       date,
-      photoUrl,
       claimQuestion,
       tags,
     } = req.body;
+
+    if (
+      !type ||
+      !title ||
+      !description ||
+      !category ||
+      !location ||
+      !date
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "All required fields must be provided",
+      });
+    }
+
+    if (!["lost", "found"].includes(type)) {
+      return res.status(400).json({
+        success: false,
+        message: "Type must be lost or found",
+      });
+    }
+
+    let photoUrl;
+
+    if (req.file) {
+      photoUrl = await uploadToCloudinary(req.file.buffer);
+    }
 
     const item = await Item.create({
       type,
@@ -33,6 +60,8 @@ export const createItem = async (req, res) => {
       data: item,
     });
   } catch (error) {
+    console.error("Create Item Error:", error);
+
     res.status(500).json({
       success: false,
       message: error.message,
@@ -47,13 +76,25 @@ export const getItems = async (req, res) => {
       category,
       status,
       search,
+      location,
+      sort = "newest",
+      page = 1,
+      limit = 10,
     } = req.query;
 
-    const filter = {};
+    const filter = {
+      approvalStatus: "approved",
+    };
 
     if (type) filter.type = type;
     if (category) filter.category = category;
     if (status) filter.status = status;
+    if (location) {
+      filter.location = {
+        $regex: location,
+        $options: "i",
+      };
+    }
 
     if (search) {
       filter.$or = [
@@ -64,13 +105,30 @@ export const getItems = async (req, res) => {
       ];
     }
 
+    const pageNumber = Number(page);
+    const limitNumber = Number(limit);
+    const skip = (pageNumber - 1) * limitNumber;
+
+    const sortOption =
+      sort === "oldest"
+        ? { createdAt: 1 }
+        : { createdAt: -1 };
+
+
+    const totalItems = await Item.countDocuments(filter);
+
     const items = await Item.find(filter)
       .populate("postedBy", "name email avatar")
-      .sort({ createdAt: -1 });
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limitNumber);
 
     res.status(200).json({
       success: true,
       count: items.length,
+      totalItems,
+      totalPages: Math.ceil(totalItems / limitNumber),
+      currentPage: pageNumber,
       data: items,
     });
   } catch (error) {
@@ -98,6 +156,46 @@ export const getItemById = async (req, res) => {
     res.status(200).json({
       success: true,
       data: item,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const getMatchingItems = async (req, res) => {
+  try {
+    const item = await Item.findById(req.params.id);
+
+    if (!item) {
+      return res.status(404).json({
+        success: false,
+        message: "Item not found",
+      });
+    }
+
+    const oppositeType = item.type === "lost" ? "found" : "lost";
+
+    const matches = await Item.find({
+      _id: { $ne: item._id },
+      approvalStatus: "approved",
+      status: "active",
+      type: oppositeType,
+      $or: [
+        { category: item.category },
+        { location: { $regex: item.location, $options: "i" } },
+        { tags: { $in: item.tags } },
+      ],
+    })
+      .populate("postedBy", "name email avatar")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: matches.length,
+      data: matches,
     });
   } catch (error) {
     res.status(500).json({
@@ -234,6 +332,66 @@ export const markItemReturned = async (req, res) => {
       success: true,
       message: "Item marked as returned",
       data: item,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+export const moderateItem = async (req, res) => {
+  try {
+    const { approvalStatus } = req.body;
+
+    if (!["approved", "rejected"].includes(approvalStatus)) {
+      return res.status(400).json({
+        success: false,
+        message: "Approval status must be approved or rejected",
+      });
+    }
+
+    const item = await Item.findById(req.params.id);
+
+    if (!item) {
+      return res.status(404).json({
+        success: false,
+        message: "Item not found",
+      });
+    }
+
+    item.approvalStatus = approvalStatus;
+
+    await item.save();
+
+    res.status(200).json({
+      success: true,
+      message: `Item ${approvalStatus}`,
+      data: item,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+export const getPendingItems = async (req, res) => {
+  try {
+    const items = await Item.find({
+      approvalStatus: "pending",
+    })
+      .populate("postedBy", "name email avatar")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: items.length,
+      data: items,
     });
   } catch (error) {
     res.status(500).json({

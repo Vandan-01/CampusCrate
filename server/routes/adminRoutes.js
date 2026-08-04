@@ -2,10 +2,21 @@ import express from "express";
 import protect from "../middleware/authMiddleware.js";
 import adminOnly from "../middleware/adminMiddleware.js";
 import User from "../models/User.js";
+import { getDashboardStats } from "../controllers/adminController.js";
+
+import {
+  moderateItem,
+  getPendingItems,
+} from "../controllers/itemController.js";
 
 const router = express.Router();
 
-router.get("/users", protect, adminOnly, async (req, res) => {
+// All admin routes require authentication + admin role
+router.use(protect, adminOnly);
+router.get("/dashboard", getDashboardStats);
+
+// Get all users
+router.get("/users", async (req, res) => {
   try {
     const users = await User.find().select("-__v");
 
@@ -21,5 +32,11 @@ router.get("/users", protect, adminOnly, async (req, res) => {
     });
   }
 });
+
+// Get pending items
+router.get("/items/pending", getPendingItems);
+
+// Approve / reject item
+router.patch("/items/:id/moderate", moderateItem);
 
 export default router;

@@ -20,6 +20,12 @@ const claimSchema = new mongoose.Schema(
       trim: true,
     },
 
+    answer: {
+  type: String,
+  required: true,
+  trim: true,
+},
+
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],

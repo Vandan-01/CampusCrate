@@ -1,4 +1,6 @@
 import express from "express";
+import checkBlocked from "../middleware/checkBlocked.js";
+import adminOnly from "../middleware/adminMiddleware.js";
 
 import {
   createReport,
@@ -8,13 +10,12 @@ import {
 } from "../controllers/reportController.js";
 
 import protect from "../middleware/authMiddleware.js";
-import adminOnly from "../middleware/adminMiddleware.js";
 
 const router = express.Router();
 
-router.post("/", protect, createReport);
-router.get("/", protect, getReports);
-router.patch("/:id", protect, updateReport);
-router.patch("/user/:id/block", protect, blockUser);
+router.post("/", protect, checkBlocked, createReport);
+router.get("/", protect, adminOnly, getReports);
+router.patch("/:id", protect, adminOnly, updateReport);
+router.patch("/user/:id/block", protect, adminOnly, blockUser);
 
 export default router;
