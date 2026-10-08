@@ -3,6 +3,10 @@ import logo from "../../assets/logos/campuscrate-logo.png"
 import { FcGoogle } from "react-icons/fc"
 
 function Login() {
+  const handleGoogleLogin = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`
+  }
+
   return (
     <div className="login-page">
 
@@ -19,13 +23,9 @@ function Login() {
         </p>
 
         <div className="features">
-
           <p>🔒 Secure college email login</p>
-
           <p>🛡️ Your data is safe with us</p>
-
           <p>✅ Trusted by students & admins</p>
-
         </div>
 
       </div>
@@ -38,8 +38,11 @@ function Login() {
           Continue to CampusCrate
         </p>
 
-
-        <button className="google-btn">
+        <button
+          type="button"
+          className="google-btn"
+          onClick={handleGoogleLogin}
+        >
           <FcGoogle size={22} />
           Sign in with Google
         </button>
