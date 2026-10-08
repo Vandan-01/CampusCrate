@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 
-import Login from "./pages/Login/Login.jsx";;
+import Login from "./pages/Login/Login.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import LostItems from "./pages/LostItems.jsx";
 import FoundItems from "./pages/FoundItems.jsx";
