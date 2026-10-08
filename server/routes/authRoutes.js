@@ -4,7 +4,6 @@ import generateToken from "../utils/generateToken.js";
 import protect from "../middleware/authMiddleware.js";
 import { getMe } from "../controllers/authController.js";
 
-
 const router = express.Router();
 
 router.get("/me", protect, getMe);
@@ -20,13 +19,13 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     session: false,
-    failureRedirect: "http://localhost:5173/login",
+    failureRedirect: `${process.env.CLIENT_URL}/login`,
   }),
   (req, res) => {
     const token = generateToken(req.user._id);
 
     res.redirect(
-      `http://localhost:5173/auth-success?token=${token}`
+      `${process.env.CLIENT_URL}/auth-success?token=${token}`
     );
   }
 );
