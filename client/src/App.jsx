@@ -13,6 +13,7 @@ import Claims from "./pages/Claims.jsx";
 import AuthSuccess from "./pages/AuthSuccess.jsx";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute";
 
 function App() {
 
@@ -89,7 +90,7 @@ function App() {
         path="/admin"
         element={
           <ProtectedRoute>
-            <Admin />
+            <AdminRoute><Admin /></AdminRoute>
           </ProtectedRoute>
         }
       />
@@ -97,7 +98,7 @@ function App() {
       <Route
         path="/claims"
         element={
-          <Claims />
+          <ProtectedRoute><Claims /></ProtectedRoute>
         }
       />
 

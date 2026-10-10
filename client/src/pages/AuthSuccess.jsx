@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function AuthSuccess() {
 
 const navigate=useNavigate();
+const { login } = useAuth();
 
 const [params]=useSearchParams();
 
@@ -12,33 +14,17 @@ useEffect(()=>{
 const token=params.get("token");
 
 if(token){
-
-localStorage.setItem("token",token);
-
-navigate("/");
+  login(token).then(() => navigate("/", { replace: true })).catch(() => navigate("/login", { replace: true }));
 
 }else{
-
-navigate("/login");
+  navigate("/login", { replace: true });
 
 }
-
-},[]);
+},[login, navigate, params]);
 
 return(
 
-<div
-style={{
-display:"grid",
-placeItems:"center",
-height:"100vh",
-fontSize:"24px"
-}}
->
-
-Logging you in...
-
-</div>
+<div className="loading-state" style={{ minHeight: "100vh" }}>Preparing your CampusCrate…</div>
 
 )
 

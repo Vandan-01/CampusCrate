@@ -1,0 +1,34 @@
+.report-page { padding-top: 26px; }
+.back-link { display: inline-flex; align-items: center; gap: 7px; padding: 0; border: 0; color: var(--forest); background: transparent; font-size: 0.84rem; font-weight: 800; }
+.back-link:hover { color: var(--amber); }
+.report-layout { display: grid; grid-template-columns: minmax(240px, 0.75fr) minmax(0, 1.25fr); gap: clamp(32px, 6vw, 94px); margin-top: 30px; }
+.report-aside { padding-top: 24px; }
+.report-aside h1 { max-width: 10ch; margin: 0; font-family: var(--display); font-size: clamp(2.4rem, 4.5vw, 4.2rem); font-weight: 500; line-height: 0.96; letter-spacing: -0.065em; }
+.report-aside > p:last-of-type { max-width: 31ch; margin: 20px 0 0; color: var(--ink-muted); }
+.report-steps { display: grid; gap: 17px; margin: 38px 0 0; padding: 0; list-style: none; color: var(--ink-muted); font-size: 0.86rem; }
+.report-steps li { display: grid; grid-template-columns: 35px 1fr; align-items: center; gap: 10px; }
+.report-steps span { color: var(--amber); font-family: var(--display); font-size: 1.1rem; }
+.report-form { padding: clamp(22px, 4vw, 38px); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-subtle); }
+.report-form__heading { display: flex; align-items: start; justify-content: space-between; gap: 18px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.report-form__heading .eyebrow { margin-bottom: 7px; }
+.report-form__heading h2 { margin: 0; font-family: var(--display); font-size: 2rem; font-weight: 500; line-height: 0.95; letter-spacing: -0.05em; }
+.report-form__required { color: var(--ink-muted); font-size: 0.73rem; }
+.form-error { margin: 22px 0 0; padding: 11px 13px; border-left: 3px solid var(--rose); color: #742d25; background: var(--rose-pale); font-size: 0.86rem; }
+.report-form__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 25px; }
+.report-form__full { grid-column: 1 / -1; }
+.photo-field { display: grid; gap: 9px; margin-top: 22px; }
+.photo-field small { margin-left: 5px; color: var(--ink-muted); font-size: 0.72rem; font-weight: 500; }
+.photo-drop { display: grid; min-height: 130px; place-items: center; align-content: center; gap: 4px; border: 1px dashed var(--line-strong); border-radius: var(--radius-sm); color: var(--ink-muted); background: #fbf9f3; text-align: center; cursor: pointer; transition: border-color 160ms ease, background 160ms ease; }
+.photo-drop:hover { border-color: var(--forest); background: var(--sage-pale); }
+.photo-drop svg { color: var(--forest); font-size: 1.65rem; }
+.photo-drop strong { color: var(--ink); font-size: 0.88rem; }
+.photo-drop span { font-size: 0.75rem; }
+.photo-drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.photo-preview { position: relative; width: min(100%, 310px); overflow: hidden; border-radius: var(--radius-sm); background: var(--surface-muted); }
+.photo-preview img { width: 100%; max-height: 220px; object-fit: cover; }
+.photo-preview button { position: absolute; top: 8px; right: 8px; display: grid; width: 30px; height: 30px; place-items: center; border: 0; border-radius: 50%; color: var(--ink); background: rgba(255, 253, 248, 0.94); }
+.report-form__footer { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
+.report-form__footer p { display: flex; max-width: 37ch; align-items: start; gap: 6px; margin: 0; color: var(--ink-muted); font-size: 0.77rem; }
+.report-form__footer p svg { flex: none; margin-top: 2px; color: var(--forest); }
+@media (max-width: 840px) { .report-layout { grid-template-columns: 1fr; gap: 20px; } .report-aside { padding-top: 0; } .report-aside h1 { max-width: 15ch; } .report-aside > p:last-of-type { max-width: 60ch; } .report-steps { grid-template-columns: repeat(3, 1fr); margin-top: 25px; } }
+@media (max-width: 560px) { .report-form__grid { grid-template-columns: 1fr; } .report-form__full { grid-column: auto; } .report-steps { grid-template-columns: 1fr; } .report-form__footer { align-items: stretch; flex-direction: column; } .report-form__footer .button { width: 100%; } }

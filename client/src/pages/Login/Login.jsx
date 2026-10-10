@@ -1,41 +1,36 @@
 import "./Login.css"
 import logo from "../../assets/logos/campuscrate-logo.png"
 import { FcGoogle } from "react-icons/fc"
+import { HiArrowRight, HiMagnifyingGlass, HiShieldCheck } from "react-icons/hi2"
+import { useState } from "react"
 
 function Login() {
+  const [oauthError, setOauthError] = useState("")
   const handleGoogleLogin = () => {
-    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`
+    const apiUrl = import.meta.env.VITE_API_URL?.replace(/\/$/, "")
+    if (!apiUrl) {
+      setOauthError("Google sign-in is not configured for this deployment. Please contact the CampusCrate administrator.")
+      return
+    }
+    window.location.assign(`${apiUrl}/auth/google`)
   }
 
   return (
-    <div className="login-page">
+    <main className="login-page">
 
-      <div className="login-left">
+      <section className="login-story">
 
-        <img src={logo} alt="CampusCrate" className="logo-img" />
+        <div className="login-wordmark"><img src={logo} alt="" /><span>Campus<span>Crate</span></span></div>
+        <div className="login-story__copy"><p>THE CAMPUS ARCHIVE</p><h1>Good things<br />find their way <em>back.</em></h1><span>LOST / FOUND / RETURNED</span></div><div className="login-object"><HiMagnifyingGlass /><i /></div>
+      </section>
 
-        <h1>CampusCrate</h1>
+      <section className="login-panel"><div className="login-panel__content">
 
-        <p className="tagline">
-          Lost & Found System
-          <br />
-          for College
-        </p>
-
-        <div className="features">
-          <p>🔒 Secure college email login</p>
-          <p>🛡️ Your data is safe with us</p>
-          <p>✅ Trusted by students & admins</p>
-        </div>
-
-      </div>
-
-      <div className="login-right">
-
-        <h2>Welcome Back!</h2>
+        <img src={logo} alt="CampusCrate" className="login-mobile-logo" />
+        <p className="eyebrow">Welcome to CampusCrate</p><h2>One place for the things that matter.</h2>
 
         <p className="sub">
-          Continue to CampusCrate
+          Sign in with your campus Google account to report, search, and reconnect belongings with their people.
         </p>
 
         <button
@@ -44,22 +39,20 @@ function Login() {
           onClick={handleGoogleLogin}
         >
           <FcGoogle size={22} />
-          Sign in with Google
+          Continue with Google <HiArrowRight />
         </button>
 
-        <p className="email-note">
-          Only @college.edu accounts
-          <br />
-          are allowed
-        </p>
+        {oauthError && <p className="login-oauth-error" role="alert">{oauthError}</p>}
+
+        <div className="login-assurance"><HiShieldCheck /><p>Your account is protected by Google sign-in and CampusCrate’s community moderation.</p></div>
 
         <p className="copyright">
-          © 2026 CampusCrate
+          © 2026 CampusCrate · A kinder campus, one returned item at a time.
         </p>
 
-      </div>
+      </div></section>
 
-    </div>
+    </main>
   )
 }
 
