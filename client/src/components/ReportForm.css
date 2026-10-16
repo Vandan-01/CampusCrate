@@ -9,7 +9,7 @@
 .report-steps li { display: grid; grid-template-columns: 35px 1fr; align-items: center; gap: 10px; }
 .report-steps span { color: var(--amber); font-family: var(--display); font-size: 1.1rem; }
 .report-form { padding: clamp(22px, 4vw, 38px); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-subtle); }
-.report-form__heading { display: flex; align-items: start; justify-content: space-between; gap: 18px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.report-form__heading { display: flex; align-items: start; justify-content: space-between; gap: 18px; min-width: 0; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
 .report-form__heading .eyebrow { margin-bottom: 7px; }
 .report-form__heading h2 { margin: 0; font-family: var(--display); font-size: 2rem; font-weight: 500; line-height: 0.95; letter-spacing: -0.05em; }
 .report-form__required { color: var(--ink-muted); font-size: 0.73rem; }
@@ -31,4 +31,4 @@
 .report-form__footer p { display: flex; max-width: 37ch; align-items: start; gap: 6px; margin: 0; color: var(--ink-muted); font-size: 0.77rem; }
 .report-form__footer p svg { flex: none; margin-top: 2px; color: var(--forest); }
 @media (max-width: 840px) { .report-layout { grid-template-columns: 1fr; gap: 20px; } .report-aside { padding-top: 0; } .report-aside h1 { max-width: 15ch; } .report-aside > p:last-of-type { max-width: 60ch; } .report-steps { grid-template-columns: repeat(3, 1fr); margin-top: 25px; } }
-@media (max-width: 560px) { .report-form__grid { grid-template-columns: 1fr; } .report-form__full { grid-column: auto; } .report-steps { grid-template-columns: 1fr; } .report-form__footer { align-items: stretch; flex-direction: column; } .report-form__footer .button { width: 100%; } }
+@media (max-width: 560px) { .report-form__heading { align-items: flex-start; flex-direction: column; gap: 8px; } .report-form__grid { grid-template-columns: 1fr; } .report-form__full { grid-column: auto; } .report-steps { grid-template-columns: 1fr; } .report-form__footer { align-items: stretch; flex-direction: column; } .report-form__footer .button { width: 100%; } }

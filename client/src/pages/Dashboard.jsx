@@ -45,7 +45,7 @@ export default function Dashboard() {
             <h1>Things go missing.<br /><em>People show up.</em></h1>
             <p>CampusCrate gives every misplaced belonging a clear path back to its person—one thoughtful report at a time.</p>
             <div className="welcome-ledger__actions">
-              <Link className="button button-primary" to="/post-lost"><HiPlus /> Report something lost</Link>
+              <Link className="button button-secondary" to="/post-lost"><HiPlus /> Report something lost</Link>
               <Link className="button button-secondary" to="/found"><HiMagnifyingGlass /> Browse found items</Link>
             </div>
           </div>
